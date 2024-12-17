@@ -40,7 +40,7 @@ func ShortenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%s%s\n", baseURL, shortKey)
+	fmt.Fprintf(w, "%s/%s\n", baseURL, shortKey)
 }
 
 // RedirectHandler redirects the short URL to the original URL
