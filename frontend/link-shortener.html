@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 URL Shortener</h1>
+        <p>Enter your long URL below, and we'll shorten it for you!</p>
+        <form id="urlForm">
+            <input type="url" id="urlInput" placeholder="Enter your URL" required />
+            <button type="submit">Shorten URL</button>
+        </form>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('urlForm');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value;
+            result.innerText = 'Shortening...';
+
+            try {
+                const response = await fetch('http://localhost:8080/shorten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `url=${encodeURIComponent(url)}`
+                });
+
+                if (response.ok) {
+                    const shortenedURL = await response.text();
+                    result.innerHTML = `<a href="${shortenedURL}" target="_blank">${shortenedURL}</a>`;
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error response:', response.status, errorText);
+                    result.innerText = `Error: ${errorText}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                result.innerText = 'Error shortening URL';
+            }
+        });
+    </script>
+</body>
+</html>
